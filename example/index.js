@@ -5,6 +5,8 @@ var Playah = window.playah;
 var html = document.documentElement;
 var canvas = document.getElementById('canvas');
 
+var frameId;
+
 var player = new Playah({
   src: 'BigBuckBunny.mp4'
 }, canvas);
@@ -13,7 +15,7 @@ var animate = function() {
   player.update();
   player.render();
 
-  window.requestAnimationFrame(animate);
+  frameId = window.requestAnimationFrame(animate);
 };
 
 html.className = 'html js';
@@ -37,5 +39,5 @@ canvas.addEventListener('click', function _onClick(e) {
 }, false);
 
 window.addEventListener('load', function _onLoad(e) {
-  window.requestAnimationFrame(animate);
+  frameId = window.requestAnimationFrame(animate);
 }, false);

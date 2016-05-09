@@ -13,9 +13,9 @@ function Playah(options, target) {
 
   this.config = settings;
 
-  this.then = null;
-  this.isLoading = true;
   this.isRunning = false;
+  this.isLoading = true;
+  this.then = null;
 
   this.video = document.createElement('video');
   this.context = document.createElement('canvas').getContext('2d');
@@ -34,19 +34,6 @@ function Playah(options, target) {
 
     return this;
   };
-
-  if (target && target.nodeName.toLowerCase() === 'canvas') {
-    this.context = target.getContext('2d');
-  }
-
-  if (this.needsFix) {
-
-    // TODO: Add independent audio track if audio part required on iOS
-    this.video.muted = 'muted';
-
-    // Automatic preload not available on iOS
-    this.video.load();
-  }
 
   this.video.setAttribute('src', this.config.src);
   this.video.setAttribute('preload', 'auto');
@@ -82,12 +69,25 @@ function Playah(options, target) {
     this.isRunning = false;
 
     // From the top
-    if (this.loop) {
+    if (this.config.loop) {
       this.toggle();
     }
 
     this.config.onEnded();
   }.bind(this), false);
+
+  if (target && target.nodeName.toLowerCase() === 'canvas') {
+    this.context = target.getContext('2d');
+  }
+
+  if (this.needsFix) {
+
+    // TODO: Add independent audio track if audio part required on iOS
+    this.video.muted = 'muted';
+
+    // Automatic preload not available on iOS
+    this.video.load();
+  }
 }
 
 Playah.prototype = {
