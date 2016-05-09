@@ -9,6 +9,7 @@
   "esnext": true,
   "shadow": true,
   "jquery": true,
+  "browser": true,
   "node": true
 }
 

@@ -28,12 +28,13 @@
     "postlint": "find lint-js.log -size 0 -print0 | xargs -0 rm",
     "start": "npm run watch",
     "serve": "php -S localhost:8000",
-    "watch": "watchify index.js -s playah -o ./dist/playah.js",
+    "watch": "nodemon -e js -w index.js -x 'npm run build'",
+    "example": "npm run build",
     "prebuild": "mkdir -p dist/",
     "build": "browserify index.js -s playah -o ./dist/playah.js",
-    "build:min": "browserify index.js -s playah | uglifyjs -o ./dist/playah.min.js",
-    "build:demo": "ln -siv \"$(pwd)/dist/playah.js\" example",
-    "postbuild": "npm run build:min",
+    "build:min": "browserify index.js -s playah | uglifyjs -mc -o ./dist/playah.min.js",
+    "build:demo": "cp ./dist/playah.min.js ./example/playah.js",
+    "postbuild": "npm run build:min && npm run build:demo",
     "preversion": "npm run clear:logs"
   },
   "engines": {
@@ -45,7 +46,7 @@
     "jshint": "latest",
     "uglify-js": "latest",
     "browserify": "latest",
-    "watchify": "latest"
+    "nodemon": "latest"
   },
   "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
   "license": "MIT"

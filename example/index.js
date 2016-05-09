@@ -1,13 +1,13 @@
 'use strict';
 
 var Playah = window.playah;
-var player = new Playah(document.getElementById('canvas'), 'BigBuckBunny.mp4');
 
-// OR
-// new Playah({
-//    fps: 25,
-//    source: 'BigBuckBunny.mp4',
-// }, document.getElementById('canvas'))
+var html = document.documentElement;
+var canvas = document.getElementById('canvas');
+
+var player = new Playah({
+  src: 'BigBuckBunny.mp4'
+}, canvas);
 
 var animate = function() {
   player.update();
@@ -16,7 +16,25 @@ var animate = function() {
   window.requestAnimationFrame(animate);
 };
 
-document.documentElement.className = 'html js';
+html.className = 'html js';
+
+if (window !== window.top) {
+  html.className += ' is-iframe';
+}
+
+player.ready(function() {
+  console.log('ready');
+});
+
+player.ended(function() {
+  console.log('ended');
+});
+
+canvas.addEventListener('click', function _onClick(e) {
+  player.toggle();
+
+  return false;
+}, false);
 
 window.addEventListener('load', function _onLoad(e) {
   window.requestAnimationFrame(animate);
