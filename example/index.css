@@ -40,6 +40,11 @@ canvas {
   margin: 0;
 }
 
+.is-iframe figcaption {
+  display: none;
+}
+
 .is-iframe canvas {
+  width: 100%;
   max-width: 100%;
 }
