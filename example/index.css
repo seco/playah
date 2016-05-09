@@ -32,7 +32,7 @@ canvas {
 }
 
 .is-iframe {
-  overflow: auto;
+  overflow: hidden;
 }
 
 .is-iframe figure {
