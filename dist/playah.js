@@ -35,16 +35,8 @@ function Playah(options, target) {
     return this;
   };
 
-  var sourceMP4 = document.createElement('source');
-
-  //this.video.setAttribute('src', this.config.src);
-
-  sourceMP4.type = 'video/mp4';
-  sourceMP4.src = this.config.src;
-
-  this.video.appendChild(sourceMP4);
-
-  this.video.setAttribute('preload', 'auto');
+  this.video.setAttribute('src', this.config.src);
+  this.video.setAttribute('preload', 'none');
 
   this.video.addEventListener('loadstart', function _onLoadStart(e) {
     try {
