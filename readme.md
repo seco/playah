@@ -18,6 +18,10 @@ var player = new Playah({
 	src: 'BigBuckBunny.mp4'
 }, document.getElementById('canvas'));
 
-// Render a single frame
-player.update().render();
+// Render a single frame and stop
+window.addEventListener('load', function _onLoad(e) {
+	var frameId = window.requestAnimationFrame(function() {
+		player.update().render().toggle();
+	});
+}, false);
 ```
