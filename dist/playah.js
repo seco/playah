@@ -36,7 +36,7 @@ function Playah(options, target) {
   };
 
   this.video.setAttribute('src', this.config.src);
-  this.video.setAttribute('preload', 'auto');
+  //this.video.setAttribute('preload', 'auto');
 
   this.video.addEventListener('loadstart', function _onLoadStart(e) {
     try {
