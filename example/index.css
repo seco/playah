@@ -112,12 +112,12 @@ canvas {
 
 @media screen and (min-width: 600px) {
   .is-iframe a {
-    font-size: 13px;
+    /*font-size: 13px;*/
+    font-size: 1rem;
   }
 }
 
 @media screen and (min-width: 800px) {
   .is-iframe a {
-    font-size: 1rem;
   }
 }

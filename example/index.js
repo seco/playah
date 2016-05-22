@@ -17,6 +17,10 @@ var animate = function() {
   player.update();
   player.render();
 
+  if (html.classList.contains('is-playing')) {
+    console.log(player.video.currentTime);
+  }
+
   frameId = window.requestAnimationFrame(animate);
 };
 
