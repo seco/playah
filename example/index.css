@@ -41,8 +41,9 @@ a:after {
 
 a:before {
   border: 1.5em solid transparent;
+  border-left-width: 2.5rem;
   border-left-color: rgba(255, 255, 255, .7);
-  margin-left: 0.5em;
+  /*margin-left: 0.5em;*/
 }
 
 a:after {
@@ -94,11 +95,11 @@ canvas {
 }
 
 .is-playing a:before {
-  margin-left: -0.5em;
+  margin-left: -1.5em;
 }
 
 .is-playing a:after {
-  margin-left: 1em;
+  /*margin-left: 1em;*/
 }
 
 .is-playing a:hover:before,
