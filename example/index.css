@@ -41,9 +41,8 @@ a:after {
 
 a:before {
   border: 1.5em solid transparent;
-  border-left-width: 2.5rem;
+  border-left-width: 2.5em;
   border-left-color: rgba(255, 255, 255, .7);
-  /*margin-left: 0.5em;*/
 }
 
 a:after {
@@ -85,6 +84,7 @@ canvas {
 
 .is-iframe a {
   height: 0;
+  font-size: 10px;
   padding-bottom: 56.25%;
 }
 
@@ -98,24 +98,26 @@ canvas {
   margin-left: -1.5em;
 }
 
-.is-playing a:after {
-  /*margin-left: 1em;*/
-}
-
 .is-playing a:hover:before,
 .is-playing a:hover:after {
   width: 1em;
   height: 3em;
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (min-width: 500px) {
   .is-iframe a {
     font-size: 12px;
   }
 }
 
-@media screen and (max-width: 520px) {
+@media screen and (min-width: 600px) {
   .is-iframe a {
-    font-size: 10px;
+    font-size: 13px;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  .is-iframe a {
+    font-size: 1rem;
   }
 }
