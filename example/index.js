@@ -17,16 +17,16 @@ var animate = function() {
   player.update();
   player.render();
 
-  if (html.classList.contains('is-playing')) {
-    console.log(player.video.currentTime);
-  }
+  //if (html.classList.contains('is-playing')) {
+    //console.log(player.video.currentTime);
+  //}
 
   frameId = window.requestAnimationFrame(animate);
 };
 
-player.ended(function() {
+player.onEnded = function() {
   html.classList.remove('is-playing');
-});
+};
 
 toggle.addEventListener('click', function _onClick(e) {
   player.toggle();
