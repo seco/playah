@@ -7,6 +7,7 @@ var toggle = document.getElementById('toggle');
 var canvas = document.getElementById('canvas');
 
 var frameId;
+var isReady = false;
 
 var player = new Playah({
   src: 'BigBuckBunny.mp4',
@@ -17,21 +18,19 @@ var animate = function() {
   player.update();
   player.render();
 
-  //if (html.classList.contains('is-playing')) {
-    //console.log(player.video.currentTime);
-  //}
-
   frameId = window.requestAnimationFrame(animate);
 };
 
-player.onEnded = function() {
+player.config.ended = function() {
   html.classList.remove('is-playing');
 };
 
 toggle.addEventListener('click', function _onClick(e) {
-  player.toggle();
+  if (player.isLoading === false) {
+    player.toggle();
 
-  html.classList.toggle('is-playing');
+    html.classList.toggle('is-playing');
+  }
 
   return false;
 }, false);

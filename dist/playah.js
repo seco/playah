@@ -23,18 +23,6 @@ function Playah(options, target) {
   this.needsFix = /iPad|iPhone|iPod/.test(navigator.platform);
   this.avoidFix = !this.needsFix;
 
-  this.ready = function(fn) {
-    this.config.onReady = fn || this.config.onReady;
-
-    return this;
-  };
-
-  this.ended = function(fn) {
-    this.config.onEnded = fn || this.config.onEnded;
-
-    return this;
-  };
-
   this.video.setAttribute('src', this.config.src);
   this.video.setAttribute('preload', 'auto');
 
@@ -61,6 +49,8 @@ function Playah(options, target) {
 
     // Done loading
     this.isLoading = false;
+
+    this.config.onLoaded();
   }.bind(this), false);
 
   this.video.addEventListener('ended', function _onEnded(e) {
@@ -145,6 +135,9 @@ Playah.defaults = {
 
   // Fire this callback when ready to play
   onReady: function() {},
+
+  // Fire this callback when metadata has loaded
+  onLoaded: function() {},
 
   // Fire this callback when done playing back
   onEnded: function() {}
