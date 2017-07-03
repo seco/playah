@@ -1,6 +1,6 @@
 {
   "name": "playah",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Helps draw video on canvas",
   "keywords": [
     "video",
@@ -17,36 +17,35 @@
     "url": "https://github.com/thewhodidthis/playah/issues"
   },
   "config": {
-    "jscsrc": ".jscsrc"
+    "remote": "thewhodidthis@zazie:www/example/playah/"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\"",
-    "clear": "npm run clear:dist && npm run clear:logs",
-    "clear:dist": "rm -rf dist/",
-    "clear:logs": "rm -f *.log",
-    "lint": "(jshint index.js & jscs index.js --reporter=inlinesingle) 2>&1 | tee lint-js.log",
-    "postlint": "find lint-js.log -size 0 -print0 | xargs -0 rm",
-    "start": "npm run watch",
-    "serve": "php -S localhost:8000",
-    "watch": "nodemon -e js -w index.js -x 'npm run build'",
-    "example": "npm run build",
-    "prebuild": "mkdir -p dist/",
-    "build": "browserify index.js -s playah -o ./dist/playah.js",
-    "build:min": "browserify index.js -s playah | uglifyjs -mc -o ./dist/playah.min.js",
-    "build:demo": "cp ./dist/playah.min.js ./example/playah.js",
-    "postbuild": "npm run build:min && npm run build:demo",
-    "preversion": "npm run clear:logs"
+    "test": "browserify test | testling -x open",
+    "lint": "eslint . example --ext .es test/*.js",
+    "start": "rollup -c && uglifyjs dist/playah.js -cmo dist/playah.min.js",
+    "example": "npm run example:build && npm run example:serve",
+    "example:build": "rollup -c -i example/index.es -f iife -o example/index.js",
+    "example:serve": "php -S localhost:8000 -t example/",
+    "example:press": "rsync -avruzLPC --delete --exclude=.DS_Store ./example/ $npm_package_config_remote"
   },
   "engines": {
     "node": ">=4.2.4",
     "npm": ">=3.5.3"
   },
+  "dependencies": {},
   "devDependencies": {
-    "jscs": "latest",
-    "jshint": "latest",
-    "uglify-js": "latest",
+    "babel-eslint": "latest",
+    "babel-plugin-external-helpers": "latest",
+    "babel-preset-latest": "latest",
     "browserify": "latest",
-    "nodemon": "latest"
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "latest",
+    "eslint-plugin-import": "latest",
+    "rollup": "latest",
+    "rollup-plugin-babel": "latest",
+    "tape": "latest",
+    "testling": "latest",
+    "uglify-js": "latest"
   },
   "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
   "license": "MIT"
