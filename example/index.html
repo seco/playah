@@ -1,23 +1,26 @@
 <!doctype html>
-<html class="html no-js">
+<html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
-    <title>Playah demo</title>
-    <link rel="stylesheet" href="index.css" />
+    <title>&middot; Playah &middot;</title>
+    <link rel="icon" href="data:image/x-icon;base64,iVBORw0KGgo=">
+    <link rel="stylesheet" href="index.css">
   </head>
 
   <body>
-    <figure id="figure">
-      <a id="toggle" href="#canvas"></a>
-      <canvas id="canvas" width="640" height="360"></canvas>
+    <figure>
+      <a href="#canvas">
+        <canvas id="canvas" width="640" height="360">
+          <img src="screenshot.png" alt="screenshot.png" />
+        </canvas>
+      </a>
+
       <figcaption>
         <p><strong>playah.js</strong> Helps render video on canvas</p>
       </figcaption>
     </figure>
 
-    <noscript>please enable javascript</noscript>
-    <script src="playah.js"></script>
+    <noscript><small><em>please enable javascript</em></small></noscript>
     <script src="index.js"></script>
   </body>
 </html>

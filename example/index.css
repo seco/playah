@@ -1,35 +1,41 @@
-html {
-  overflow: scroll;
+body {
+  margin: 0;
+  padding: 0.5rem;
+  overflow: hidden;
+  box-sizing: border-box;
+  font: 16px/1.25 arial, sans-serif;
 }
 
-body,
-p,
-figure {
+small {
+  font-size: 0.75rem;
+}
+
+p {
   margin: 0;
+  font-size: 0.875rem;
 }
 
 figure {
   top: 50%;
-  width: 100%;
-  height: 360px;
-  cursor: pointer;
-  margin-top: -180px;
+  left: 50%;
   position: absolute;
+  text-align: center;
+  margin: -180px 0 0 -320px;
+}
+
+figcaption {
+  margin: 0.5rem;
 }
 
 a {
-  width: 100%;
-  height: 100%;
-  width: 640px;
   display: block;
-  position: absolute;
+  position: relative;
 }
 
-a:before,
-a:after {
+a::before,
+a::after {
   top: 50%;
   left: 50%;
-
   width: 0;
   height: 0;
   content: "";
@@ -39,28 +45,19 @@ a:after {
   transform: translate(-50%, -50%);
 }
 
-a:before {
+a::before {
   border: 1.5em solid transparent;
   border-left-width: 2.5em;
   border-left-color: rgba(255, 255, 255, .7);
+  margin-left: 0.75rem;
 }
 
-a:after {
+a::after {
   border: 0;
-}
-
-figcaption {
-  margin-top: 0.5rem;
-}
-
-figcaption p {
-  font-size: 90%;
-  padding-left: 0.5rem;
 }
 
 canvas {
   display: block;
-  background: #000;
 }
 
 .is-iframe {
@@ -69,7 +66,9 @@ canvas {
 
 .is-iframe figure {
   top: 0;
+  left: 0;
   margin: 0;
+  width: 100%;
 }
 
 .is-iframe figcaption {
@@ -88,18 +87,22 @@ canvas {
   padding-bottom: 56.25%;
 }
 
-.is-playing a:before,
-.is-playing a:after {
+.is-playing a::before,
+.is-playing a::after {
   border: 0;
   background: rgba(255, 255, 255, .7);
 }
 
-.is-playing a:before {
-  margin-left: -1.5em;
+.is-playing a::before {
+  margin-left: -0.75em;
 }
 
-.is-playing a:hover:before,
-.is-playing a:hover:after {
+.is-playing a::after {
+  margin-left: 0.75em;
+}
+
+.is-playing a:hover::before,
+.is-playing a:hover::after {
   width: 1em;
   height: 3em;
 }
@@ -112,12 +115,7 @@ canvas {
 
 @media screen and (min-width: 600px) {
   .is-iframe a {
-    /*font-size: 13px;*/
-    font-size: 1rem;
+    font-size: 16px;
   }
 }
 
-@media screen and (min-width: 800px) {
-  .is-iframe a {
-  }
-}
