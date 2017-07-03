@@ -1,27 +1,18 @@
 ## Playah
-> Helps draw video on canvas, including on iOS >= 8.
+> Helps draw video on canvas, including on iOS >= 8
 
 ### Setup
 ```sh
 npm install thewhodidthis/playah
-
-# Build demo
-npm run example
 ```
 
 ### Usage
 ```js
-var Playah = require('playah');
-var player = new Playah({
-	loop: false,
-	autoStart: true,
-	src: 'BigBuckBunny.mp4'
-}, document.getElementById('canvas'));
+const createPlayer = require('playah');
 
-// Render a single frame and stop
-window.addEventListener('load', function _onLoad(e) {
-	var frameId = window.requestAnimationFrame(function() {
-		player.update().render().toggle();
-	});
-}, false);
+const player = createPlayer({ file: 'BigBuckBunny.mp4', loop: true });
+const master = document.createElement('canvas').getContext('2d');
+
+player.update();
+master.drawImage(player.video, 0, 0);
 ```
