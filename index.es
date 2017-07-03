@@ -1,21 +1,18 @@
-var Playah = (function () {
-'use strict';
-
-var createPlayer = function createPlayer(options) {
+const createPlayer = (options) => {
   // Needs fix?
-  var isIOS = /iPad|iPhone|iPod/.test(window.navigator.platform);
+  const isIOS = /iPad|iPhone|iPod/.test(window.navigator.platform);
 
   // Config
-  var wants = Object.assign({ auto: true, loop: false, file: '' }, options);
+  const wants = Object.assign({ auto: true, loop: false, file: '' }, options);
 
   // Status
-  var stats = { running: false, time: 0 };
+  const stats = { running: false, time: 0 };
 
   // Source
-  var video = document.createElement('video');
+  const video = document.createElement('video');
 
   // Toggle
-  var onoff = function onoff() {
+  const onoff = () => {
     if (!isIOS) {
       if (stats.running) {
         video.pause();
@@ -28,10 +25,10 @@ var createPlayer = function createPlayer(options) {
   };
 
   // Update
-  var frame = function frame() {
+  const frame = () => {
     if (isIOS) {
-      var time = new Date().getTime();
-      var diff = time - (stats.time || time);
+      const time = new Date().getTime();
+      const diff = time - (stats.time || time);
 
       if (stats.running) {
         video.currentTime += diff * 0.001;
@@ -61,14 +58,14 @@ var createPlayer = function createPlayer(options) {
   });
 
   // First frame done loading
-  video.addEventListener('loadeddata', function () {
+  video.addEventListener('loadeddata', () => {
     if (wants.auto) {
       onoff();
     }
   });
 
   // Done playing
-  video.addEventListener('ended', function () {
+  video.addEventListener('ended', () => {
     stats.running = false;
 
     if (wants.loop) {
@@ -84,9 +81,8 @@ var createPlayer = function createPlayer(options) {
     video.load();
   }
 
-  return { toggle: onoff, update: frame, video: video, stats: stats };
+  return { toggle: onoff, update: frame, video, stats };
 };
 
-return createPlayer;
+export default createPlayer;
 
-}());

@@ -1,145 +1,89 @@
 'use strict';
 
-function Playah(options, target) {
-  var defaults = Object.create(Playah.defaults);
-  var settings = options || {};
+var createPlayer = function createPlayer(options) {
+  // Needs fix?
+  var isIOS = /iPad|iPhone|iPod/.test(window.navigator.platform);
 
-  for (var prop in defaults) {
-    if (!settings.hasOwnProperty(prop)) {
-      settings[prop] = defaults[prop];
-    }
-  }
+  // Config
+  var wants = Object.assign({ auto: true, loop: false, file: '' }, options);
 
-  this.config = settings;
+  // Status
+  var stats = { running: false, time: 0 };
 
-  this.isRunning = false;
-  this.isLoading = true;
-  this.then = null;
+  // Source
+  var video = document.createElement('video');
 
-  this.video = document.createElement('video');
-  this.context = document.createElement('canvas').getContext('2d');
-
-  this.needsFix = /iPad|iPhone|iPod/.test(navigator.platform);
-  this.avoidFix = !this.needsFix;
-
-  this.video.setAttribute('src', this.config.src);
-  this.video.setAttribute('preload', 'auto');
-
-  this.video.addEventListener('loadstart', function _onLoadStart(e) {
-    try {
-      this.video.currentTime = this.config.startTime;
-    } catch (error) {
-
-      // No currentTime hack available, iOS <8 I think
-      this.video.removeEventListener('loadstart', _onLoadStart, false);
-
-      return;
+  // Toggle
+  var onoff = function onoff() {
+    if (!isIOS) {
+      if (stats.running) {
+        video.pause();
+      } else {
+        video.play();
+      }
     }
 
-    // Start playing immediately
-    if (this.config.autoStart) {
-      this.toggle();
-    }
+    stats.running = !stats.running;
+  };
 
-    this.config.onReady();
-  }.bind(this), false);
+  // Update
+  var frame = function frame() {
+    if (isIOS) {
+      var time = new Date().getTime();
+      var diff = time - (stats.time || time);
 
-  this.video.addEventListener('loadeddata', function _onLoadedData(e) {
+      if (stats.running) {
+        video.currentTime += diff * 0.001;
 
-    // Done loading
-    this.isLoading = false;
-
-    this.config.onLoaded();
-  }.bind(this), false);
-
-  this.video.addEventListener('ended', function _onEnded(e) {
-
-    // Done playing
-    this.isRunning = false;
-
-    // From the top
-    if (this.config.loop) {
-      this.toggle();
-    }
-
-    this.config.onEnded();
-  }.bind(this), false);
-
-  if (target && target.nodeName.toLowerCase() === 'canvas') {
-    this.context = target.getContext('2d');
-  }
-
-  if (this.needsFix) {
-
-    // TODO: Add independent audio track if audio part required on iOS
-    this.video.muted = 'muted';
-
-    // Automatic preload not available on iOS
-    this.video.load();
-  }
-}
-
-Playah.prototype = {
-  constructor: Playah,
-
-  update: function() {
-    if (this.needsFix) {
-      var now = new Date().getTime();
-      var delta = now - (this.then || now);
-
-      if (this.isRunning) {
-        this.video.currentTime += delta * 0.001;
-
-        if (this.video.currentTime >= this.video.duration) {
-          this.video.currentTime = 0;
-
-          this.isRunning = false;
+        if (video.currentTime >= video.duration) {
+          video.currentTime = 0;
+          stats.running = false;
         }
       }
 
-      this.then = now;
+      stats.time = time;
     }
+  };
 
-    return this;
-  },
+  // Go
+  video.src = wants.file;
+  video.preload = 'auto';
 
-  render: function() {
-    if (this.isRunning) {
-      this.context.drawImage(this.video, 0, 0);
+  // Check availability
+  video.addEventListener('loadstart', function onloadstart() {
+    try {
+      video.currentTime = stats.time;
+    } catch (error) {
+      // No currentTime hack available, that means iOS <8 I believe
+      video.removeEventListener('loadstart', onloadstart, false);
     }
+  });
 
-    return this;
-  },
-
-  toggle: function() {
-    if (this.avoidFix) {
-      if (this.isRunning) {
-        this.video.pause();
-      } else {
-        this.video.play();
-      }
+  // First frame done loading
+  video.addEventListener('loadeddata', function () {
+    if (wants.auto) {
+      onoff();
     }
+  });
 
-    this.isRunning = !this.isRunning;
+  // Done playing
+  video.addEventListener('ended', function () {
+    stats.running = false;
 
-    return this;
+    if (wants.loop) {
+      onoff();
+    }
+  });
+
+  if (isIOS) {
+    // Just in case
+    video.muted = 'muted';
+
+    // Must have
+    video.load();
   }
+
+  return { toggle: onoff, update: frame, video: video, stats: stats };
 };
 
-Playah.defaults = {
-  src: '',
-  loop: true,
-  startTime: 0,
-  autoStart: false,
-
-  // Fire this callback when ready to play
-  onReady: function() {},
-
-  // Fire this callback when metadata has loaded
-  onLoaded: function() {},
-
-  // Fire this callback when done playing back
-  onEnded: function() {}
-};
-
-module.exports = Playah;
+module.exports = createPlayer;
