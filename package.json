@@ -2,12 +2,8 @@
   "name": "playah",
   "version": "0.0.0",
   "description": "Helps draw video on canvas",
-  "keywords": [
-    "video",
-    "html5",
-    "canvas"
-  ],
   "main": "index.js",
+  "module": "index.es",
   "homepage": "https://github.com/thewhodidthis/playah#readme",
   "repository": {
     "type": "git",
@@ -16,17 +12,14 @@
   "bugs": {
     "url": "https://github.com/thewhodidthis/playah/issues"
   },
-  "config": {
-    "remote": "thewhodidthis@zazie:www/example/playah/"
-  },
   "scripts": {
-    "test": "browserify test | testling -x open",
-    "lint": "eslint . example --ext .es test/*.js",
-    "start": "rollup -c && uglifyjs dist/playah.js -cmo dist/playah.min.js",
-    "example": "npm run example:build && npm run example:serve",
-    "example:build": "rollup -c -i example/index.es -f iife -o example/index.js",
-    "example:serve": "php -S localhost:8000 -t example/",
-    "example:press": "rsync -avruzLPC --delete --exclude=.DS_Store ./example/ $npm_package_config_remote"
+    "test": "eslint '**/*.es' test.js && browserify test | kpow",
+    "start": "rollup -f cjs index.es | buble > index.js",
+    "example": "cd example; rollup -f iife index.es | buble > index.js && open index.html",
+    "postpublish": "rsync -avruzLPC --del --exclude=.* ./example/ thewhodidthis@zazie:www/example/playah/"
+  },
+  "eslintConfig": {
+    "extends": "@thewhodidthis"
   },
   "engines": {
     "node": ">=4.2.4",
@@ -34,18 +27,12 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "babel-eslint": "latest",
-    "babel-plugin-external-helpers": "latest",
-    "babel-preset-latest": "latest",
+    "@thewhodidthis/eslint-config": "latest",
     "browserify": "latest",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb-base": "latest",
-    "eslint-plugin-import": "latest",
+    "buble": "latest",
+    "kpow": "latest",
     "rollup": "latest",
-    "rollup-plugin-babel": "latest",
-    "tape": "latest",
-    "testling": "latest",
-    "uglify-js": "latest"
+    "tape": "latest"
   },
   "author": "sChzs BkgNns <sotirios.bakagiannis@gmail.com> (https://www.thewhodidthis.com)",
   "license": "MIT"
