@@ -1,88 +1,90 @@
-const createPlayer = (options) => {
-  // Needs fix?
-  const isIOS = /iPad|iPhone|iPod/.test(window.navigator.platform);
+// # Playah
+// Helps render video on canvas
 
-  // Config
-  const wants = Object.assign({ auto: true, loop: false, file: '' }, options);
+const createPlayer = (options) => {
+  // Apply fix?
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.platform)
+
+  // Current config
+  const wants = Object.assign({ auto: true, loop: false, file: '' }, options)
 
   // Status
-  const stats = { running: false, time: 0 };
+  const stats = { running: false, time: 0 }
 
   // Source
-  const video = document.createElement('video');
+  const video = document.createElement('video')
 
   // Toggle
   const onoff = () => {
     if (!isIOS) {
       if (stats.running) {
-        video.pause();
+        video.pause()
       } else {
-        video.play();
+        video.play()
       }
     }
 
-    stats.running = !stats.running;
-  };
+    stats.running = !stats.running
+  }
 
   // Update
   const frame = () => {
     if (isIOS) {
-      const time = new Date().getTime();
-      const diff = time - (stats.time || time);
+      const time = new Date().getTime()
+      const diff = time - (stats.time || time)
 
       if (stats.running) {
-        video.currentTime += diff * 0.001;
+        video.currentTime += diff * 0.001
 
         if (video.currentTime >= video.duration) {
-          video.currentTime = 0;
-          stats.running = false;
+          video.currentTime = 0
+          stats.running = false
         }
       }
 
-      stats.time = time;
+      stats.time = time
     }
-  };
+  }
 
   // Go
-  video.src = wants.file;
-  video.preload = 'auto';
+  video.src = wants.file
+  video.preload = 'auto'
 
   // Check availability
-  video.addEventListener('loadstart', function onloadstart() {
+  video.addEventListener('loadstart', function onloadstart () {
     try {
-      video.currentTime = stats.time;
+      video.currentTime = stats.time
     } catch (error) {
       // No currentTime hack available, that means iOS <8 I believe
-      video.removeEventListener('loadstart', onloadstart, false);
+      video.removeEventListener('loadstart', onloadstart, false)
     }
-  });
+  })
 
   // First frame done loading
   video.addEventListener('loadeddata', () => {
     if (wants.auto) {
-      onoff();
+      onoff()
     }
-  });
+  })
 
   // Done playing
   video.addEventListener('ended', () => {
-    stats.running = false;
+    stats.running = false
 
     if (wants.loop) {
-      onoff();
+      onoff()
     }
-  });
+  })
 
   if (isIOS) {
     // Just in case
-    video.muted = 'muted';
+    video.muted = 'muted'
 
     // Must have
-    video.load();
+    video.load()
   }
 
-  return { toggle: onoff, update: frame, video, stats };
-};
+  return { toggle: onoff, update: frame, video, stats }
+}
 
-export default createPlayer;
-
+export default createPlayer
