@@ -1,11 +1,14 @@
 (function () {
 'use strict';
 
-var createPlayer = function createPlayer(options) {
-  // Needs fix?
-  var isIOS = /iPad|iPhone|iPod/.test(window.navigator.platform);
+// # Playah
+// Helps render video on canvas
 
-  // Config
+var createPlayer = function (options) {
+  // Apply fix?
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.platform);
+
+  // Current config
   var wants = Object.assign({ auto: true, loop: false, file: '' }, options);
 
   // Status
@@ -15,7 +18,7 @@ var createPlayer = function createPlayer(options) {
   var video = document.createElement('video');
 
   // Toggle
-  var onoff = function onoff() {
+  var onoff = function () {
     if (!isIOS) {
       if (stats.running) {
         video.pause();
@@ -28,7 +31,7 @@ var createPlayer = function createPlayer(options) {
   };
 
   // Update
-  var frame = function frame() {
+  var frame = function () {
     if (isIOS) {
       var time = new Date().getTime();
       var diff = time - (stats.time || time);
@@ -51,7 +54,7 @@ var createPlayer = function createPlayer(options) {
   video.preload = 'auto';
 
   // Check availability
-  video.addEventListener('loadstart', function onloadstart() {
+  video.addEventListener('loadstart', function onloadstart () {
     try {
       video.currentTime = stats.time;
     } catch (error) {
@@ -84,7 +87,7 @@ var createPlayer = function createPlayer(options) {
     video.load();
   }
 
-  return { toggle: onoff, update: frame, video: video, stats: stats };
+  return { toggle: onoff, update: frame, video: video, stats: stats }
 };
 
 if (window !== window.top) {
@@ -97,7 +100,7 @@ var master = document.querySelector('canvas').getContext('2d');
 
 var player = createPlayer({ file: 'BigBuckBunny.mp4' });
 
-var toggle = function toggle(e) {
+var toggle = function (e) {
   e.preventDefault();
   e.stopPropagation();
 
@@ -106,10 +109,10 @@ var toggle = function toggle(e) {
 };
 
 var update = player.update;
-var render = function render() {
+var render = function () {
   master.drawImage(player.video, 0, 0);
 };
-var repeat = function repeat() {
+var repeat = function () {
   update();
   render();
 
@@ -132,3 +135,4 @@ button.addEventListener('touchstart', toggle);
 button.addEventListener('mousedown', toggle);
 
 }());
+
