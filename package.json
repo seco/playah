@@ -13,9 +13,13 @@
     "url": "https://github.com/thewhodidthis/playah/issues"
   },
   "scripts": {
-    "test": "eslint '**/*.es' test.js && browserify test | kpow",
+    "pretest": "eslint test.js",
+    "test": "browserify test | kpow",
+    "prestart": "eslint index.es",
     "start": "rollup -f cjs index.es | buble > index.js",
-    "example": "cd example; rollup -f iife index.es | buble > index.js && open index.html",
+    "preexample": "eslint example/*.es",
+    "example": "cd example; rollup -f iife index.es | buble > index.js",
+    "postexample": "open example/index.html",
     "postpublish": "rsync -avruzLPC --del --exclude=.* ./example/ thewhodidthis@zazie:www/example/playah/"
   },
   "eslintConfig": {
