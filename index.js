@@ -53,7 +53,7 @@ var createPlayer = function (options) {
   video.preload = 'auto';
 
   // Check availability
-  video.addEventListener('loadstart', function onloadstart () {
+  video.addEventListener('loadstart', function onloadstart() {
     try {
       video.currentTime = stats.time;
     } catch (error) {
