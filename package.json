@@ -34,6 +34,7 @@
     "@thewhodidthis/eslint-config": "latest",
     "browserify": "latest",
     "buble": "latest",
+    "eslint": "latest",
     "kpow": "latest",
     "rollup": "latest",
     "tape": "latest"
