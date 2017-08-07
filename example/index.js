@@ -98,20 +98,23 @@ var figure = document.querySelector('figure');
 var button = document.querySelector('a');
 var master = document.querySelector('canvas').getContext('2d');
 
-var player = createPlayer({ file: 'BigBuckBunny.mp4' });
+var ref = createPlayer({ file: 'BigBuckBunny.mp4', auto: false });
+var video = ref.video;
+var toggle = ref.toggle;
+var update = ref.update;
 
-var toggle = function (e) {
+var handleClick = function (e) {
   e.preventDefault();
   e.stopPropagation();
 
-  player.toggle();
+  toggle();
   figure.classList.toggle('is-playing');
 };
 
-var update = player.update;
 var render = function () {
-  master.drawImage(player.video, 0, 0);
+  master.drawImage(video, 0, 0);
 };
+
 var repeat = function () {
   update();
   render();
@@ -119,20 +122,16 @@ var repeat = function () {
   window.requestAnimationFrame(repeat);
 };
 
-player.video.addEventListener('loadstart', function () {
+video.addEventListener('loadstart', function () {
   window.requestAnimationFrame(repeat);
 });
 
-player.video.addEventListener('loadeddata', function () {
-  figure.classList.add('is-playing');
-});
-
-player.video.addEventListener('ended', function () {
+video.addEventListener('ended', function () {
   figure.classList.remove('is-playing');
 });
 
-button.addEventListener('touchstart', toggle);
-button.addEventListener('mousedown', toggle);
+button.addEventListener('touchstart', handleClick);
+button.addEventListener('mousedown', handleClick);
 
 }());
 
