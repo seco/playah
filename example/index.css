@@ -1,9 +1,21 @@
+html {
+  font: 16px/1.25 arial, sans-serif;
+}
+
 body {
   box-sizing: border-box;
-  font: 16px/1.25 arial, sans-serif;
   margin: 0;
   overflow: hidden;
   padding: 0.5rem;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 small {
@@ -27,13 +39,17 @@ figcaption {
   margin: 0.5rem;
 }
 
-a {
+canvas {
+  display: block;
+}
+
+.button {
   display: block;
   position: relative;
 }
 
-a::before,
-a::after {
+.button::before,
+.button::after {
   box-sizing: border-box;
   content: "";
   display: block;
@@ -45,19 +61,19 @@ a::after {
   width: 0;
 }
 
-a::before {
+.button::before {
   border: 1.5em solid transparent;
   border-left-color: rgba(255, 255, 255, .7);
   border-left-width: 2.5em;
   margin-left: 0.75rem;
 }
 
-a::after {
+.button::after {
   border: 0;
 }
 
-canvas {
-  display: block;
+.button:hover {
+  text-decoration: none;
 }
 
 .is-iframe {
@@ -74,47 +90,47 @@ canvas {
 .is-iframe figcaption {
   display: none;
 }
-
-.is-iframe a,
-.is-iframe canvas {
+,
+.is-iframe canvas,
+.is-iframe .button {
   max-width: 100%;
   width: 100%;
 }
 
-.is-iframe a {
+.is-iframe .button {
   font-size: 10px;
   height: 0;
   padding-bottom: 56.25%;
 }
 
-.is-playing a::before,
-.is-playing a::after {
+.is-playing .button::before,
+.is-playing .button::after {
   background: rgba(255, 255, 255, .7);
   border: 0;
 }
 
-.is-playing a::before {
+.is-playing .button::before {
   margin-left: -0.75em;
 }
 
-.is-playing a::after {
+.is-playing .button::after {
   margin-left: 0.75em;
 }
 
-.is-playing a:hover::before,
-.is-playing a:hover::after {
+.is-playing .button:hover::before,
+.is-playing .button:hover::after {
   height: 3em;
   width: 1em;
 }
 
 @media screen and (min-width: 500px) {
-  .is-iframe a {
+  .is-iframe .button {
     font-size: 12px;
   }
 }
 
 @media screen and (min-width: 600px) {
-  .is-iframe a {
+  .is-iframe .button {
     font-size: 16px;
   }
 }
