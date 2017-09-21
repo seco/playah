@@ -1,3 +1,5 @@
+'use strict'
+
 const kpow = require('kpow')
 const test = require('tape')
 const createPlayer = require('./')
