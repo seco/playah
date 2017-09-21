@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "description": "Helps draw video on canvas",
   "main": "index.js",
-  "module": "index.es",
+  "module": "index.mjs",
   "homepage": "https://github.com/thewhodidthis/playah#readme",
   "repository": {
     "type": "git",
@@ -15,9 +15,9 @@
   "scripts": {
     "pretest": "eslint test.js",
     "test": "browserify test | kpow",
-    "prestart": "eslint index.es",
-    "start": "rollup -f cjs index.es | buble > index.js",
-    "preexample": "eslint example/*.es",
+    "prestart": "eslint index.mjs",
+    "start": "rollup -f cjs index.mjs | buble > index.js",
+    "preexample": "eslint example/index.es",
     "example": "cd example; rollup -f iife index.es | buble > index.js",
     "postexample": "open example/index.html"
   },
