@@ -3,16 +3,17 @@
 
 ### Setup
 ```sh
-npm install thewhodidthis/playah
+# Fetch latest from github
+npm i thewhodidthis/playah
 ```
 
 ### Usage
 ```js
-const createPlayer = require('playah');
+const createPlayer = require('playah')
 
-const player = createPlayer({ file: 'BigBuckBunny.mp4', loop: true });
-const master = document.createElement('canvas').getContext('2d');
+const target = document.createElement('canvas').getContext('2d')
+const source = createPlayer({ file: 'BigBuckBunny.mp4', loop: true })
 
-player.update();
-master.drawImage(player.video, 0, 0);
+source.update()
+target.drawImage(source.video, 0, 0)
 ```
