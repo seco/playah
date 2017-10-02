@@ -1,4 +1,4 @@
-import createPlayer from '../index.mjs'
+import createPlayer from '../index.es'
 
 if (window !== window.top) {
   document.documentElement.classList.add('is-iframe')
