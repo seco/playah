@@ -7,9 +7,9 @@ const createPlayer = require('./')
 kpow()
 
 test('will report', (t) => {
-  const player = createPlayer()
+  const { stats } = createPlayer()
 
-  t.notOk(player.stats.running)
-  t.notOk(player.stats.time)
+  t.notOk(stats.running)
+  t.notOk(stats.time)
   t.end()
 })
