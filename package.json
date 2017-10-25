@@ -1,6 +1,6 @@
 {
   "name": "playah",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Helps draw video on canvas",
   "main": "index.js",
   "module": "index.es",
