@@ -1,15 +1,11 @@
-'use strict'
+import 'cutaway'
+import { report, assert } from 'tapeless'
+import createPlayer from './index.es'
 
-const kpow = require('kpow')
-const test = require('tape')
-const createPlayer = require('./')
+const { notOk } = assert
+const { stats } = createPlayer()
 
-kpow()
+notOk(stats.running, 'running state', 'will report')
+notOk(stats.time, 'current time')
 
-test('will report', (t) => {
-  const { stats } = createPlayer()
-
-  t.notOk(stats.running)
-  t.notOk(stats.time)
-  t.end()
-})
+report()
