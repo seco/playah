@@ -8,7 +8,7 @@ npm i thewhodidthis/playah
 
 ### Usage
 ```js
-const createPlayer = require('playah')
+import createPlayer from 'playah'
 
 const target = document.createElement('canvas').getContext('2d')
 const source = createPlayer({ file: 'BigBuckBunny.mp4', loop: true })
