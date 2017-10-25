@@ -1,4 +1,3 @@
-## Playah
 > Helps draw video on canvas, including on iOS >= 8
 
 ### Setup
