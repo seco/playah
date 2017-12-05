@@ -3,9 +3,9 @@ import { report, assert } from 'tapeless'
 import createPlayer from './index.es'
 
 const { notOk } = assert
-const { stats } = createPlayer()
+const { status } = createPlayer()
 
-notOk(stats.running, 'running state', 'will report')
-notOk(stats.time, 'current time')
+notOk(status.busy, 'running state', 'will report')
+notOk(status.time, 'current time')
 
 report()
