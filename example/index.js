@@ -4,90 +4,95 @@
 // # Playah
 // Helps render video on canvas
 
-var createPlayer = function (options) {
-  // Apply fix?
-  var isIOS = /iPad|iPhone|iPod/.test(navigator.platform);
+var createPlayer = function (ref) {
+  if ( ref === void 0 ) ref = {};
+  var auto = ref.auto; if ( auto === void 0 ) auto = true;
+  var loop = ref.loop; if ( loop === void 0 ) loop = false;
+  var file = ref.file; if ( file === void 0 ) file = '';
 
-  // Current config
-  var wants = Object.assign({ auto: true, loop: false, file: '' }, options);
+  var isLame = /iPad|iPhone|iPod/.test(navigator.platform);
+  var isCool = !isLame;
 
-  // Status
-  var stats = { running: false, time: 0 };
+  var status = { busy: false, time: 0 };
+  var source = document.createElement('video');
 
-  // Source
-  var video = document.createElement('video');
-
-  // Toggle
-  var onoff = function () {
-    if (!isIOS) {
-      if (stats.running) {
-        video.pause();
+  var toggle = function () {
+    if (isCool) {
+      if (status.busy) {
+        source.pause();
       } else {
-        video.play();
+        var launch = source.play();
+
+        // Some browsers don't support the promise based version yet
+        if (launch !== undefined) {
+          launch.then(function () {
+            status.busy = true;
+          }).catch(function () {
+            status.busy = false;
+          });
+
+          return
+        }
       }
     }
 
-    stats.running = !stats.running;
+    status.busy = !status.busy;
   };
 
   // Update
-  var frame = function () {
-    if (isIOS) {
-      var time = new Date().getTime();
-      var diff = time - (stats.time || time);
+  var update = function () {
+    if (isLame) {
+      var time = Date.now();
+      var diff = time - (status.time || time);
 
-      if (stats.running) {
-        video.currentTime += diff * 0.001;
-
-        if (video.currentTime >= video.duration) {
-          video.currentTime = 0;
-          stats.running = false;
-        }
+      if (status.busy) {
+        source.currentTime += diff * 0.001;
       }
 
-      stats.time = time;
+      status.time = time;
     }
   };
 
   // Go
-  video.src = wants.file;
-  video.preload = 'auto';
+  source.src = file;
+  source.preload = 'auto';
 
   // Check availability
-  video.addEventListener('loadstart', function onloadstart() {
+  source.addEventListener('loadstart', function onloadstart() {
     try {
-      video.currentTime = stats.time;
-    } catch (error) {
+      source.currentTime = status.time;
+    } catch (e) {
       // No currentTime hack available, that means iOS <8 I believe
-      video.removeEventListener('loadstart', onloadstart, false);
+      source.removeEventListener('loadstart', onloadstart, false);
     }
   });
 
   // First frame done loading
-  video.addEventListener('loadeddata', function () {
-    if (wants.auto) {
-      onoff();
+  source.addEventListener('loadeddata', function () {
+    if (auto) {
+      toggle();
     }
   });
 
   // Done playing
-  video.addEventListener('ended', function () {
-    stats.running = false;
+  source.addEventListener('ended', function () {
+    status.busy = false;
+    status.time = source.currentTime = 0;
 
-    if (wants.loop) {
-      onoff();
+    if (loop) {
+      toggle();
     }
   });
 
-  if (isIOS) {
+  if (isLame) {
     // Just in case
-    video.muted = 'muted';
+    source.muted = 'muted';
 
     // Must have
-    video.load();
+    source.load();
   }
 
-  return { toggle: onoff, update: frame, video: video, stats: stats }
+  return { toggle: toggle, update: update, source: source, status: status }
 };
 
 if (window !== window.top) {
@@ -95,24 +100,15 @@ if (window !== window.top) {
 }
 
 var figure = document.querySelector('figure');
-var button = document.querySelector('a');
 var master = document.querySelector('canvas').getContext('2d');
 
-var ref = createPlayer({ file: 'BigBuckBunny.mp4', auto: false });
-var video = ref.video;
+var ref = createPlayer({ file: 'footage.mp4', auto: false });
+var source = ref.source;
 var toggle = ref.toggle;
 var update = ref.update;
 
-var handleClick = function (e) {
-  e.preventDefault();
-  e.stopPropagation();
-
-  toggle();
-  figure.classList.toggle('is-playing');
-};
-
 var render = function () {
-  master.drawImage(video, 0, 0);
+  master.drawImage(source, 0, 0);
 };
 
 var repeat = function () {
@@ -122,16 +118,21 @@ var repeat = function () {
   window.requestAnimationFrame(repeat);
 };
 
-video.addEventListener('loadstart', function () {
+source.addEventListener('ended', function () {
+  figure.classList.remove('is-active');
+});
+
+source.addEventListener('loadstart', function () {
   window.requestAnimationFrame(repeat);
 });
 
-video.addEventListener('ended', function () {
-  figure.classList.remove('is-playing');
-});
+document.querySelector('a').addEventListener('click', function (e) {
+  e.stopPropagation();
+  e.preventDefault();
 
-button.addEventListener('touchstart', handleClick);
-button.addEventListener('mousedown', handleClick);
+  figure.classList.toggle('is-active');
+  toggle();
+});
 
 }());
 

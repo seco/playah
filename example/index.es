@@ -5,21 +5,12 @@ if (window !== window.top) {
 }
 
 const figure = document.querySelector('figure')
-const button = document.querySelector('a')
 const master = document.querySelector('canvas').getContext('2d')
 
-const { video, toggle, update } = createPlayer({ file: 'BigBuckBunny.mp4', auto: false })
-
-const handleClick = (e) => {
-  e.preventDefault()
-  e.stopPropagation()
-
-  toggle()
-  figure.classList.toggle('is-playing')
-}
+const { source, toggle, update } = createPlayer({ file: 'footage.mp4', auto: false })
 
 const render = () => {
-  master.drawImage(video, 0, 0)
+  master.drawImage(source, 0, 0)
 }
 
 const repeat = () => {
@@ -29,13 +20,18 @@ const repeat = () => {
   window.requestAnimationFrame(repeat)
 }
 
-video.addEventListener('loadstart', () => {
+source.addEventListener('ended', () => {
+  figure.classList.remove('is-active')
+})
+
+source.addEventListener('loadstart', () => {
   window.requestAnimationFrame(repeat)
 })
 
-video.addEventListener('ended', () => {
-  figure.classList.remove('is-playing')
-})
+document.querySelector('a').addEventListener('click', (e) => {
+  e.stopPropagation()
+  e.preventDefault()
 
-button.addEventListener('touchstart', handleClick)
-button.addEventListener('mousedown', handleClick)
+  figure.classList.toggle('is-active')
+  toggle()
+})
