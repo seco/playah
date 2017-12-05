@@ -11,8 +11,14 @@ npm i thewhodidthis/playah
 import createPlayer from 'playah'
 
 const target = document.createElement('canvas').getContext('2d')
-const source = createPlayer({ file: 'BigBuckBunny.mp4', loop: true })
+const { update, source } = createPlayer({ file: 'BigBuckBunny.mp4' })
 
-source.update()
-target.drawImage(source.video, 0, 0)
+const render = () => {
+    target.drawImage(source, 0, 0)
+}
+
+window.requestAnimationFrame(() => {
+    update()
+    render()
+})
 ```
