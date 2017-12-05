@@ -1,3 +1,9 @@
+@keyframes hide {
+  to {
+    visibility: hidden;
+  }
+}
+
 html {
   font: 16px/1.25 arial, sans-serif;
 }
@@ -44,6 +50,10 @@ img {
   display: block;
 }
 
+canvas {
+  background: #000 url('screenshot.png') no-repeat;
+}
+
 .button {
   display: block;
   position: relative;
@@ -77,30 +87,32 @@ img {
   text-decoration: none;
 }
 
+.is-active .button::before,
+.is-active .button::after {
+  background: rgba(255, 255, 255, 0.7);
+  border: 0;
+}
+
+.is-active .button::before {
+  margin-left: -0.75em;
+}
+
+.is-active .button::after {
+  margin-left: 0.75em;
+}
+
+.is-active .button:hover::before,
+.is-active .button:hover::after {
+  animation: hide 0s 1s forwards;
+  height: 3em;
+  visibility: visible;
+  width: 1em;
+}
+
 .is-iframe {
   overflow: hidden;
 }
 
 .is-iframe figcaption {
   display: none;
-}
-
-.is-playing .button::before,
-.is-playing .button::after {
-  background: rgba(255, 255, 255, 0.7);
-  border: 0;
-}
-
-.is-playing .button::before {
-  margin-left: -0.75em;
-}
-
-.is-playing .button::after {
-  margin-left: 0.75em;
-}
-
-.is-playing .button:hover::before,
-.is-playing .button:hover::after {
-  height: 3em;
-  width: 1em;
 }
