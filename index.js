@@ -3,90 +3,90 @@
 // # Playah
 // Helps render video on canvas
 
-const createPlayer = (options) => {
-  // Apply fix?
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.platform);
+const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
+  const isLame = /iPad|iPhone|iPod/.test(navigator.platform);
+  const isCool = !isLame;
 
-  // Current config
-  const wants = Object.assign({ auto: true, loop: false, file: '' }, options);
+  const status = { busy: false, time: 0 };
+  const source = document.createElement('video');
 
-  // Status
-  const stats = { running: false, time: 0 };
-
-  // Source
-  const video = document.createElement('video');
-
-  // Toggle
-  const onoff = () => {
-    if (!isIOS) {
-      if (stats.running) {
-        video.pause();
+  const toggle = () => {
+    if (isCool) {
+      if (status.busy) {
+        source.pause();
       } else {
-        video.play();
+        const launch = source.play();
+
+        // Some browsers don't support the promise based version yet
+        if (launch !== undefined) {
+          launch.then(() => {
+            status.busy = true;
+          }).catch(() => {
+            status.busy = false;
+          });
+
+          return
+        }
       }
     }
 
-    stats.running = !stats.running;
+    status.busy = !status.busy;
   };
 
   // Update
-  const frame = () => {
-    if (isIOS) {
-      const time = new Date().getTime();
-      const diff = time - (stats.time || time);
+  const update = () => {
+    if (isLame) {
+      const time = Date.now();
+      const diff = time - (status.time || time);
 
-      if (stats.running) {
-        video.currentTime += diff * 0.001;
-
-        if (video.currentTime >= video.duration) {
-          video.currentTime = 0;
-          stats.running = false;
-        }
+      if (status.busy) {
+        source.currentTime += diff * 0.001;
       }
 
-      stats.time = time;
+      status.time = time;
     }
   };
 
   // Go
-  video.src = wants.file;
-  video.preload = 'auto';
+  source.src = file;
+  source.preload = 'auto';
 
   // Check availability
-  video.addEventListener('loadstart', function onloadstart() {
+  source.addEventListener('loadstart', function onloadstart() {
     try {
-      video.currentTime = stats.time;
-    } catch (error) {
+      source.currentTime = status.time;
+    } catch (e) {
       // No currentTime hack available, that means iOS <8 I believe
-      video.removeEventListener('loadstart', onloadstart, false);
+      source.removeEventListener('loadstart', onloadstart, false);
     }
   });
 
   // First frame done loading
-  video.addEventListener('loadeddata', () => {
-    if (wants.auto) {
-      onoff();
+  source.addEventListener('loadeddata', () => {
+    if (auto) {
+      toggle();
     }
   });
 
   // Done playing
-  video.addEventListener('ended', () => {
-    stats.running = false;
+  source.addEventListener('ended', () => {
+    status.busy = false;
+    status.time = source.currentTime = 0;
 
-    if (wants.loop) {
-      onoff();
+    if (loop) {
+      toggle();
     }
   });
 
-  if (isIOS) {
+  if (isLame) {
     // Just in case
-    video.muted = 'muted';
+    source.muted = 'muted';
 
     // Must have
-    video.load();
+    source.load();
   }
 
-  return { toggle: onoff, update: frame, video, stats }
+  return { toggle, update, source, status }
 };
 
 module.exports = createPlayer;
