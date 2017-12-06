@@ -77,7 +77,7 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
   })
 
   if (isLame) {
-    // Just in case
+    // Sorry :))
     source.muted = 'muted'
 
     // Must have
