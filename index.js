@@ -3,25 +3,30 @@
 // # Playah
 // Helps render video on canvas
 
-const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
-  const isLame = /iPad|iPhone|iPod/.test(navigator.platform);
-  const isCool = !isLame;
+var createPlayer = function (ref) {
+  if ( ref === void 0 ) ref = {};
+  var auto = ref.auto; if ( auto === void 0 ) auto = true;
+  var loop = ref.loop; if ( loop === void 0 ) loop = false;
+  var file = ref.file; if ( file === void 0 ) file = '';
 
-  const status = { busy: false, time: 0 };
-  const source = document.createElement('video');
+  var isLame = /iPad|iPhone|iPod/.test(navigator.platform);
+  var isCool = !isLame;
 
-  const toggle = () => {
+  var status = { busy: false, time: 0 };
+  var source = document.createElement('video');
+
+  var toggle = function () {
     if (isCool) {
       if (status.busy) {
         source.pause();
       } else {
-        const launch = source.play();
+        var launch = source.play();
 
         // Some browsers don't support the promise based version yet
         if (launch !== undefined) {
-          launch.then(() => {
+          launch.then(function () {
             status.busy = true;
-          }).catch(() => {
+          }).catch(function () {
             status.busy = false;
           });
 
@@ -34,15 +39,12 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
   };
 
   // Update
-  const update = () => {
-    if (isLame) {
-      const time = Date.now();
-      const diff = time - (status.time || time);
+  var update = function () {
+    if (isLame && status.busy) {
+      var time = Date.now();
+      var diff = time - (status.time || time);
 
-      if (status.busy) {
-        source.currentTime += diff * 0.001;
-      }
-
+      source.currentTime += diff * 0.001;
       status.time = time;
     }
   };
@@ -62,14 +64,16 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
   });
 
   // First frame done loading
-  source.addEventListener('loadeddata', () => {
+  source.addEventListener('loadeddata', function onloadeddata() {
     if (auto) {
       toggle();
     }
+
+    source.removeEventListener('onloadeddata', onloadeddata, false);
   });
 
   // Done playing
-  source.addEventListener('ended', () => {
+  source.addEventListener('ended', function () {
     status.busy = false;
     status.time = source.currentTime = 0;
 
@@ -86,7 +90,8 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
     source.load();
   }
 
-  return { toggle, update, source, status }
+  return { toggle: toggle, update: update, source: source, status: status }
 };
 
 module.exports = createPlayer;
+

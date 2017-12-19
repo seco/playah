@@ -33,14 +33,11 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
 
   // Update
   const update = () => {
-    if (isLame) {
+    if (isLame && status.busy) {
       const time = Date.now()
       const diff = time - (status.time || time)
 
-      if (status.busy) {
-        source.currentTime += diff * 0.001
-      }
-
+      source.currentTime += diff * 0.001
       status.time = time
     }
   }
@@ -60,10 +57,12 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
   })
 
   // First frame done loading
-  source.addEventListener('loadeddata', () => {
+  source.addEventListener('loadeddata', function onloadeddata() {
     if (auto) {
       toggle()
     }
+
+    source.removeEventListener('onloadeddata', onloadeddata, false)
   })
 
   // Done playing
