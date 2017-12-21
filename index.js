@@ -9,25 +9,22 @@ var createPlayer = function (ref) {
   var loop = ref.loop; if ( loop === void 0 ) loop = false;
   var file = ref.file; if ( file === void 0 ) file = '';
 
-  var isLame = /iPad|iPhone|iPod/.test(navigator.platform);
-  var isCool = !isLame;
-
-  var status = { busy: false, time: 0 };
   var source = document.createElement('video');
+  var status = { time: 0, idle: true, lame: /iPad|iPhone|iPod/.test(navigator.platform) };
 
   var toggle = function () {
-    if (isCool) {
-      if (status.busy) {
+    if (!status.lame) {
+      if (!status.idle) {
         source.pause();
       } else {
-        var launch = source.play();
+        var playing = source.play();
 
         // Some browsers don't support the promise based version yet
-        if (launch !== undefined) {
-          launch.then(function () {
-            status.busy = true;
+        if (playing !== undefined) {
+          playing.then(function () {
+            status.idle = false;
           }).catch(function () {
-            status.busy = false;
+            status.idle = true;
           });
 
           return
@@ -35,16 +32,17 @@ var createPlayer = function (ref) {
       }
     }
 
-    status.busy = !status.busy;
+    status.idle = !status.idle;
   };
 
   // Update
   var update = function () {
-    if (isLame && status.busy) {
+    if (status.lame) {
       var time = Date.now();
-      var diff = time - (status.time || time);
+      var then = status.time || time;
+      var step = time - then;
 
-      source.currentTime += diff * 0.001;
+      source.currentTime += step * 0.001;
       status.time = time;
     }
   };
@@ -56,7 +54,7 @@ var createPlayer = function (ref) {
   // Check availability
   source.addEventListener('loadstart', function onloadstart() {
     try {
-      source.currentTime = status.time;
+      source.currentTime = 0;
     } catch (e) {
       // No currentTime hack available, that means iOS <8 I believe
       source.removeEventListener('loadstart', onloadstart, false);
@@ -74,7 +72,7 @@ var createPlayer = function (ref) {
 
   // Done playing
   source.addEventListener('ended', function () {
-    status.busy = false;
+    status.idle = true;
     status.time = source.currentTime = 0;
 
     if (loop) {
@@ -82,7 +80,7 @@ var createPlayer = function (ref) {
     }
   });
 
-  if (isLame) {
+  if (status.lame) {
     // Sorry :))
     source.muted = 'muted';
 
@@ -90,7 +88,7 @@ var createPlayer = function (ref) {
     source.load();
   }
 
-  return { toggle: toggle, update: update, source: source, status: status }
+  return { source: source, toggle: toggle, update: update, status: status }
 };
 
 module.exports = createPlayer;

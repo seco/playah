@@ -2,25 +2,22 @@
 // Helps render video on canvas
 
 const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
-  const isLame = /iPad|iPhone|iPod/.test(navigator.platform)
-  const isCool = !isLame
-
-  const status = { busy: false, time: 0 }
   const source = document.createElement('video')
+  const status = { time: 0, idle: true, lame: /iPad|iPhone|iPod/.test(navigator.platform) }
 
   const toggle = () => {
-    if (isCool) {
-      if (status.busy) {
+    if (!status.lame) {
+      if (!status.idle) {
         source.pause()
       } else {
-        const launch = source.play()
+        const playing = source.play()
 
         // Some browsers don't support the promise based version yet
-        if (launch !== undefined) {
-          launch.then(() => {
-            status.busy = true
-          }).catch(() => {
-            status.busy = false
+        if (playing !== undefined) {
+          playing.then(() => {
+            status.idle = false
+          }).catch((e) => {
+            status.idle = true
           })
 
           return
@@ -28,16 +25,17 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
       }
     }
 
-    status.busy = !status.busy
+    status.idle = !status.idle
   }
 
   // Update
   const update = () => {
-    if (isLame && status.busy) {
+    if (status.lame) {
       const time = Date.now()
-      const diff = time - (status.time || time)
+      const then = status.time || time
+      const step = time - then
 
-      source.currentTime += diff * 0.001
+      source.currentTime += step * 0.001
       status.time = time
     }
   }
@@ -49,7 +47,7 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
   // Check availability
   source.addEventListener('loadstart', function onloadstart() {
     try {
-      source.currentTime = status.time
+      source.currentTime = 0
     } catch (e) {
       // No currentTime hack available, that means iOS <8 I believe
       source.removeEventListener('loadstart', onloadstart, false)
@@ -67,7 +65,7 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
 
   // Done playing
   source.addEventListener('ended', () => {
-    status.busy = false
+    status.idle = true
     status.time = source.currentTime = 0
 
     if (loop) {
@@ -75,7 +73,7 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
     }
   })
 
-  if (isLame) {
+  if (status.lame) {
     // Sorry :))
     source.muted = 'muted'
 
@@ -83,7 +81,7 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
     source.load()
   }
 
-  return { toggle, update, source, status }
+  return { source, toggle, update, status }
 }
 
 export default createPlayer
