@@ -16,7 +16,7 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
         if (playing !== undefined) {
           playing.then(() => {
             status.idle = false
-          }).catch((e) => {
+          }).catch(() => {
             status.idle = true
           })
 
@@ -30,6 +30,10 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
 
   // Update
   const update = () => {
+    if (status.idle) {
+      return
+    }
+
     if (status.lame) {
       const time = Date.now()
       const then = status.time || time
@@ -50,7 +54,7 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
       source.currentTime = 0
     } catch (e) {
       // No currentTime hack available, that means iOS <8 I believe
-      source.removeEventListener('loadstart', onloadstart, false)
+      source.removeEventListener('loadstart', onloadstart)
     }
   })
 
@@ -60,7 +64,7 @@ const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
       toggle()
     }
 
-    source.removeEventListener('onloadeddata', onloadeddata, false)
+    source.removeEventListener('loadeddata', onloadeddata)
   })
 
   // Done playing

@@ -37,6 +37,10 @@ var createPlayer = function (ref) {
 
   // Update
   var update = function () {
+    if (status.idle) {
+      return
+    }
+
     if (status.lame) {
       var time = Date.now();
       var then = status.time || time;
@@ -57,7 +61,7 @@ var createPlayer = function (ref) {
       source.currentTime = 0;
     } catch (e) {
       // No currentTime hack available, that means iOS <8 I believe
-      source.removeEventListener('loadstart', onloadstart, false);
+      source.removeEventListener('loadstart', onloadstart);
     }
   });
 
@@ -67,7 +71,7 @@ var createPlayer = function (ref) {
       toggle();
     }
 
-    source.removeEventListener('onloadeddata', onloadeddata, false);
+    source.removeEventListener('loadeddata', onloadeddata);
   });
 
   // Done playing
