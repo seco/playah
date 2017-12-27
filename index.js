@@ -87,9 +87,6 @@ var createPlayer = function (video, delay) {
       play();
     }
 
-    // Get rid of this before anyone gets hurt
-    video.removeAttribute('autoplay');
-
     // Must have
     video.load();
   }
