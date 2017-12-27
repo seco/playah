@@ -1,4 +1,4 @@
-> Helps draw video on canvas, including on iOS >= 8
+> Helps controls video elements, including on iOS >= 8
 
 ### Setup
 ```sh
@@ -10,15 +10,33 @@ npm i thewhodidthis/playah
 ```js
 import createPlayer from 'playah'
 
-const target = document.createElement('canvas').getContext('2d')
-const { update, source } = createPlayer({ file: 'BigBuckBunny.mp4' })
+const video = document.createElement('video')
 
-const render = () => {
-    target.drawImage(source, 0, 0)
-}
-
-window.requestAnimationFrame(() => {
-    update()
-    render()
+'playsinline loop autoplay'.split(' ').forEach((v) => {
+  video.setAttribute(v, '')
 })
+
+video.setAttribute('src', 'footage.mp4')
+
+const { play, stop } = createPlayer(video)
+
+let isBusy
+
+video.addEventListener('loadstart', () => {
+    isBusy = true
+})
+
+video.addEventListener('click', (e) => {
+    e.preventDefault()
+
+    if (isBusy) {
+        stop()
+    } else {
+        play()
+    }
+
+    isBusy = !isBusy
+}, false)
+
+document.body.appendChild(video)
 ```
