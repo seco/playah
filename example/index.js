@@ -24,9 +24,6 @@ var createPlayer = function (video, delay) {
     // In ms
     video.currentTime += delta * 0.001;
 
-    // Be safe
-    video.currentTime %= video.duration || 0.001;
-
     // Repeat, repurpose veto flag
     veto = setTimeout(tick, delay, stamp);
   };
@@ -74,6 +71,8 @@ var createPlayer = function (video, delay) {
 
   // Done playing
   video.addEventListener('ended', function () {
+    video.currentTime = 0;
+
     if (veto) {
       stop();
     }
