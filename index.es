@@ -2,7 +2,7 @@
 // Helps control video elements
 
 const createPlayer = (video, delay = 30) => {
-  if (video === undefined || video.nodeName === undefined || video.nodeName !== 'VIDEO') {
+  if (!video || !video.src || !video.nodeName || video.nodeName !== 'VIDEO') {
     throw TypeError('Missing valid source')
   }
 
@@ -81,6 +81,9 @@ const createPlayer = (video, delay = 30) => {
     if (video.autoplay) {
       play()
     }
+
+    // Drop before anyone gets hurt
+    video.removeAttribute('autoplay')
 
     // Must have
     video.load()

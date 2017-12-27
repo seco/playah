@@ -6,7 +6,7 @@
 var createPlayer = function (video, delay) {
   if ( delay === void 0 ) delay = 30;
 
-  if (video === undefined || video.nodeName === undefined || video.nodeName !== 'VIDEO') {
+  if (!video || !video.src || !video.nodeName || video.nodeName !== 'VIDEO') {
     throw TypeError('Missing valid source')
   }
 
@@ -85,6 +85,9 @@ var createPlayer = function (video, delay) {
     if (video.autoplay) {
       play();
     }
+
+    // Drop before anyone gets hurt
+    video.removeAttribute('autoplay');
 
     // Must have
     video.load();
