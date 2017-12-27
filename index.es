@@ -19,9 +19,6 @@ const createPlayer = (video, delay = 30) => {
     // In ms
     video.currentTime += delta * 0.001
 
-    // Be safe
-    video.currentTime %= video.duration || 0.001
-
     // Repeat, repurpose veto flag
     veto = setTimeout(tick, delay, stamp)
   }
@@ -69,6 +66,8 @@ const createPlayer = (video, delay = 30) => {
 
   // Done playing
   video.addEventListener('ended', () => {
+    video.currentTime = 0
+
     if (veto) {
       stop()
     }
