@@ -16,7 +16,7 @@ const video = document.createElement('video')
   video.setAttribute(v, '')
 })
 
-video.setAttribute('src', 'footage.mp4')
+video.setAttribute('src', 'BigBuckBunny.mp4')
 
 const { play, stop } = createPlayer(video)
 
