@@ -1,91 +1,96 @@
 // # Playah
-// Helps render video on canvas
+// Helps control video elements
 
-const createPlayer = ({ auto = true, loop = false, file = '' } = {}) => {
-  const source = document.createElement('video')
-  const status = { time: 0, idle: true, lame: /iPad|iPhone|iPod/.test(navigator.platform) }
-
-  const toggle = () => {
-    if (!status.lame) {
-      if (!status.idle) {
-        source.pause()
-      } else {
-        const playing = source.play()
-
-        // Some browsers don't support the promise based version yet
-        if (playing !== undefined) {
-          playing.then(() => {
-            status.idle = false
-          }).catch(() => {
-            status.idle = true
-          })
-
-          return
-        }
-      }
-    }
-
-    status.idle = !status.idle
+const createPlayer = (video, delay = 30) => {
+  if (video === undefined || video.nodeName === undefined || video.nodeName !== 'VIDEO') {
+    throw TypeError('Missing valid source')
   }
 
-  // Update
-  const update = () => {
-    if (status.idle) {
-      return
-    }
+  // Needs fixing?
+  let veto = /iPad|iPhone|iPod/.test(navigator.platform)
 
-    if (status.lame) {
-      const time = Date.now()
-      const then = status.time || time
-      const step = time - then
+  // Is playing?
+  let idle = true
 
-      source.currentTime += step * 0.001
-      status.time = time
-    }
+  const tick = (since) => {
+    const stamp = Date.now()
+    const delta = stamp - (since || stamp)
+
+    // In ms
+    video.currentTime += delta * 0.001
+
+    // Be safe
+    video.currentTime %= video.duration || 0.001
+
+    // Repeat, repurpose veto flag
+    veto = setTimeout(tick, delay, stamp)
   }
 
-  // Go
-  source.src = file
-  source.preload = 'auto'
+  const kick = () => {
+    if (idle) {
+      tick()
+    }
+
+    idle = false
+  }
+
+  const drop = () => {
+    if (veto) {
+      clearTimeout(veto)
+    }
+
+    idle = true
+  }
+
+  const stop = veto ? drop : () => {
+    video.pause()
+  }
+
+  const play = veto ? kick : () => {
+    const playsMaybe = video.play()
+
+    // Some browsers don't support the promise based version yet
+    if (playsMaybe) {
+      playsMaybe.catch(console.log)
+    }
+  }
 
   // Check availability
-  source.addEventListener('loadstart', function onloadstart() {
+  video.addEventListener('loadstart', function xloadstart() {
     try {
-      source.currentTime = 0
+      video.currentTime = 0
     } catch (e) {
       // No currentTime hack available, that means iOS <8 I believe
-      source.removeEventListener('loadstart', onloadstart)
-    }
-  })
-
-  // First frame done loading
-  source.addEventListener('loadeddata', function onloadeddata() {
-    if (auto) {
-      toggle()
+      throw e
     }
 
-    source.removeEventListener('loadeddata', onloadeddata)
+    video.removeEventListener('loadstart', xloadstart)
   })
 
   // Done playing
-  source.addEventListener('ended', () => {
-    status.idle = true
-    status.time = source.currentTime = 0
+  video.addEventListener('ended', () => {
+    if (veto) {
+      stop()
+    }
 
-    if (loop) {
-      toggle()
+    if (video.loop) {
+      play()
     }
   })
 
-  if (status.lame) {
-    // Sorry :))
-    source.muted = 'muted'
+  if (veto) {
+    if (video.autoplay) {
+      play()
+    }
+
+    // Get rid of this before anyone gets hurt
+    video.removeAttribute('autoplay')
 
     // Must have
-    source.load()
+    video.load()
   }
 
-  return { source, toggle, update, status }
+  return { play, stop, start: play, pause: stop }
 }
 
 export default createPlayer

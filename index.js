@@ -1,98 +1,100 @@
 'use strict';
 
 // # Playah
-// Helps render video on canvas
+// Helps control video elements
 
-var createPlayer = function (ref) {
-  if ( ref === void 0 ) ref = {};
-  var auto = ref.auto; if ( auto === void 0 ) auto = true;
-  var loop = ref.loop; if ( loop === void 0 ) loop = false;
-  var file = ref.file; if ( file === void 0 ) file = '';
+var createPlayer = function (video, delay) {
+  if ( delay === void 0 ) delay = 30;
 
-  var source = document.createElement('video');
-  var status = { time: 0, idle: true, lame: /iPad|iPhone|iPod/.test(navigator.platform) };
+  if (video === undefined || video.nodeName === undefined || video.nodeName !== 'VIDEO') {
+    throw TypeError('Missing valid source')
+  }
 
-  var toggle = function () {
-    if (!status.lame) {
-      if (!status.idle) {
-        source.pause();
-      } else {
-        var playing = source.play();
+  // Needs fixing?
+  var veto = /iPad|iPhone|iPod/.test(navigator.platform);
 
-        // Some browsers don't support the promise based version yet
-        if (playing !== undefined) {
-          playing.then(function () {
-            status.idle = false;
-          }).catch(function () {
-            status.idle = true;
-          });
+  // Is playing?
+  var idle = true;
 
-          return
-        }
-      }
-    }
+  var tick = function (since) {
+    var stamp = Date.now();
+    var delta = stamp - (since || stamp);
 
-    status.idle = !status.idle;
+    // In ms
+    video.currentTime += delta * 0.001;
+
+    // Be safe
+    video.currentTime %= video.duration || 0.001;
+
+    // Repeat, repurpose veto flag
+    veto = setTimeout(tick, delay, stamp);
   };
 
-  // Update
-  var update = function () {
-    if (status.idle) {
-      return
+  var kick = function () {
+    if (idle) {
+      tick();
     }
 
-    if (status.lame) {
-      var time = Date.now();
-      var then = status.time || time;
-      var step = time - then;
-
-      source.currentTime += step * 0.001;
-      status.time = time;
-    }
+    idle = false;
   };
 
-  // Go
-  source.src = file;
-  source.preload = 'auto';
+  var drop = function () {
+    if (veto) {
+      clearTimeout(veto);
+    }
+
+    idle = true;
+  };
+
+  var stop = veto ? drop : function () {
+    video.pause();
+  };
+
+  var play = veto ? kick : function () {
+    var playsMaybe = video.play();
+
+    // Some browsers don't support the promise based version yet
+    if (playsMaybe) {
+      playsMaybe.catch(console.log);
+    }
+  };
 
   // Check availability
-  source.addEventListener('loadstart', function onloadstart() {
+  video.addEventListener('loadstart', function xloadstart() {
     try {
-      source.currentTime = 0;
+      video.currentTime = 0;
     } catch (e) {
       // No currentTime hack available, that means iOS <8 I believe
-      source.removeEventListener('loadstart', onloadstart);
-    }
-  });
-
-  // First frame done loading
-  source.addEventListener('loadeddata', function onloadeddata() {
-    if (auto) {
-      toggle();
+      throw e
     }
 
-    source.removeEventListener('loadeddata', onloadeddata);
+    video.removeEventListener('loadstart', xloadstart);
   });
 
   // Done playing
-  source.addEventListener('ended', function () {
-    status.idle = true;
-    status.time = source.currentTime = 0;
+  video.addEventListener('ended', function () {
+    if (veto) {
+      stop();
+    }
 
-    if (loop) {
-      toggle();
+    if (video.loop) {
+      play();
     }
   });
 
-  if (status.lame) {
-    // Sorry :))
-    source.muted = 'muted';
+  if (veto) {
+    if (video.autoplay) {
+      play();
+    }
+
+    // Get rid of this before anyone gets hurt
+    video.removeAttribute('autoplay');
 
     // Must have
-    source.load();
+    video.load();
   }
 
-  return { source: source, toggle: toggle, update: update, status: status }
+  return { play: play, stop: stop, start: play, pause: stop }
 };
 
 module.exports = createPlayer;
