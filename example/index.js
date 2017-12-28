@@ -12,7 +12,7 @@ var createPlayer = function (video, delay) {
   }
 
   // Needs fixing?
-  var veto = /iPad|iPhone|iPod/.test(navigator.platform);
+  var veto = delay && /iPad|iPhone|iPod/.test(navigator.platform);
 
   // Is playing?
   var idle = true;
@@ -34,6 +34,9 @@ var createPlayer = function (video, delay) {
     }
 
     idle = false;
+
+    // Paused?
+    return idle
   };
 
   var drop = function () {
@@ -42,10 +45,15 @@ var createPlayer = function (video, delay) {
     }
 
     idle = true;
+
+    // Paused?
+    return idle
   };
 
   var stop = veto ? drop : function () {
     video.pause();
+
+    return video.paused
   };
 
   var play = veto ? kick : function () {
@@ -53,8 +61,11 @@ var createPlayer = function (video, delay) {
 
     // Some browsers don't support the promise based version yet
     if (playsMaybe) {
-      playsMaybe.catch(console.log);
+      // Fail silently, because the `paused` attribute remains unchanged regardless
+      playsMaybe.catch(function () {});
     }
+
+    return video.paused
   };
 
   // Check availability
