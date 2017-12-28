@@ -18,24 +18,19 @@ const video = document.createElement('video')
 
 video.setAttribute('src', 'BigBuckBunny.mp4')
 
+// Instantiating past video setup is kind of important in this example
 const { play, stop } = createPlayer(video)
 
-let isBusy
+let paused = 1
 
 video.addEventListener('loadstart', () => {
-    isBusy = true
+    paused = 0
 })
 
 video.addEventListener('click', (e) => {
     e.preventDefault()
-
-    if (isBusy) {
-        stop()
-    } else {
-        play()
-    }
-
-    isBusy = !isBusy
+    
+    paused = paused ? play() : stop()
 }, false)
 
 document.body.appendChild(video)
