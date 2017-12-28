@@ -7,7 +7,7 @@ const createPlayer = (video, delay = 30) => {
   }
 
   // Needs fixing?
-  let veto = /iPad|iPhone|iPod/.test(navigator.platform)
+  let veto = delay && /iPad|iPhone|iPod/.test(navigator.platform)
 
   // Is playing?
   let idle = true
@@ -29,6 +29,9 @@ const createPlayer = (video, delay = 30) => {
     }
 
     idle = false
+
+    // Paused?
+    return idle
   }
 
   const drop = () => {
@@ -37,10 +40,15 @@ const createPlayer = (video, delay = 30) => {
     }
 
     idle = true
+
+    // Paused?
+    return idle
   }
 
   const stop = veto ? drop : () => {
     video.pause()
+
+    return video.paused
   }
 
   const play = veto ? kick : () => {
@@ -48,8 +56,11 @@ const createPlayer = (video, delay = 30) => {
 
     // Some browsers don't support the promise based version yet
     if (playsMaybe) {
-      playsMaybe.catch(console.log)
+      // Fail silently, because the `paused` attribute remains unchanged regardless
+      playsMaybe.catch(() => {})
     }
+
+    return video.paused
   }
 
   // Check availability
