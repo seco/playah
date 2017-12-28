@@ -18,7 +18,8 @@ const video = document.createElement('video')
 
 video.setAttribute('src', 'BigBuckBunny.mp4')
 
-// Instantiating past video setup is kind of important in this example
+// Instantiating past video setup is
+// kind of important in this example
 const { play, stop } = createPlayer(video)
 
 let paused = 1
