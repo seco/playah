@@ -2,7 +2,7 @@ import 'cutaway'
 import { report, assert } from 'tapeless'
 import createPlayer from './index.es'
 
-const { ok, equal } = assert
+const { ok, notOk, equal } = assert
 
 try {
   createPlayer()
@@ -12,9 +12,14 @@ try {
 
 const source = document.createElement('video')
 
+source.src = ''
+
 const { play, stop } = createPlayer(source)
 
-equal(typeof play, 'function', 'play', 'will return')
+equal(typeof play, 'function', 'play', 'will operate')
+notOk(play(), 'playing')
+
 equal(typeof stop, 'function', 'stop')
+ok(stop(), 'paused')
 
 report()
