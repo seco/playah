@@ -13,7 +13,7 @@ var createPlayer = function (video, delay) {
   // Needs fixing?
   var veto = delay && /iPad|iPhone|iPod/.test(navigator.platform);
 
-  // Is playing?
+  // Paused?
   var idle = true;
 
   var tick = function (since) {
@@ -34,7 +34,6 @@ var createPlayer = function (video, delay) {
 
     idle = false;
 
-    // Paused?
     return idle
   };
 
@@ -45,7 +44,6 @@ var createPlayer = function (video, delay) {
 
     idle = true;
 
-    // Paused?
     return idle
   };
 

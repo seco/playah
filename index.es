@@ -9,7 +9,7 @@ const createPlayer = (video, delay = 30) => {
   // Needs fixing?
   let veto = delay && /iPad|iPhone|iPod/.test(navigator.platform)
 
-  // Is playing?
+  // Paused?
   let idle = true
 
   const tick = (since) => {
@@ -30,7 +30,6 @@ const createPlayer = (video, delay = 30) => {
 
     idle = false
 
-    // Paused?
     return idle
   }
 
@@ -41,7 +40,6 @@ const createPlayer = (video, delay = 30) => {
 
     idle = true
 
-    // Paused?
     return idle
   }
 
