@@ -1,4 +1,4 @@
-> Helps control video elements, including on iOS >= 8
+> Helps control video elements with autoplay available down to iOS 8
 
 ### Setup
 ```sh
