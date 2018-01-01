@@ -1,7 +1,7 @@
 {
   "name": "playah",
   "version": "2.0.6",
-  "description": "Helps draw video on canvas",
+  "description": "Helps control video elements",
   "main": "index.js",
   "module": "index.es",
   "homepage": "https://github.com/thewhodidthis/playah#readme",
