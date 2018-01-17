@@ -6,7 +6,7 @@ if (window !== window.top) {
 
 const source = document.createElement('video')
 
-source.setAttribute('src', 'footage.mp4')
+source.setAttribute('src', 'source.mp4')
 
 const player = createPlayer(source)
 

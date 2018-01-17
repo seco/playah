@@ -112,7 +112,7 @@ if (window !== window.top) {
 
 var source = document.createElement('video');
 
-source.setAttribute('src', 'footage.mp4');
+source.setAttribute('src', 'source.mp4');
 
 var player = createPlayer(source);
 
