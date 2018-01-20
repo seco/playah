@@ -112,6 +112,8 @@ if (window !== window.top) {
 
 var source = document.createElement('video');
 
+// Fallback video from
+// https://www.pond5.com/stock-footage/43338828/czechoslovak-troops-marching-parade.html
 source.setAttribute('src', 'source.mp4');
 
 var player = createPlayer(source);

@@ -6,6 +6,8 @@ if (window !== window.top) {
 
 const source = document.createElement('video')
 
+// Fallback video from
+// https://www.pond5.com/stock-footage/43338828/czechoslovak-troops-marching-parade.html
 source.setAttribute('src', 'source.mp4')
 
 const player = createPlayer(source)
